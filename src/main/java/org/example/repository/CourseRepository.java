@@ -1,20 +1,11 @@
 package org.example.repository;
 
 import org.example.entity.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CourseRepository {
-  long generateId();
+public interface CourseRepository extends JpaRepository<Course, Long> {
 
-  List<Course> findAll();
-
-  Course findById(long courseId);
-
-  void create(Course course);
-
-  void update(Course course);
-
-  void delete(long courseId);
 }
 

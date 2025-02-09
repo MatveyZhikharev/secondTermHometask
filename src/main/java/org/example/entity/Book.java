@@ -1,21 +1,23 @@
 package org.example.entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
 import java.util.Objects;
 
+@Entity
+@Data
+@Table(name = "books")
 public class Book {
-  private final long id;
-  private final String title;
-  private final String author;
-  private final String publisher;
-  private final String releaseDate;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  public Book(long id, String title, String author, String publisher, String releaseDate) {
-    this.id = id;
-    this.title = title;
-    this.author = author;
-    this.publisher = publisher;
-    this.releaseDate = releaseDate;
-  }
+  private String title;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @Override
   public boolean equals(Object o) {

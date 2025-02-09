@@ -1,19 +1,10 @@
 package org.example.repository;
 
 import org.example.entity.University;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UniversityRepository {
-  long generateId();
+public interface UniversityRepository extends JpaRepository<University, Long> {
 
-  List<University> findAll();
-
-  University findById(long universityId);
-
-  void create(University university);
-
-  void update(University university);
-
-  void delete(long universityId);
 }

@@ -1,22 +1,22 @@
 package org.example.entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
+@Entity
+@Data
+@Table(name = "users")
 public class User {
-  private final long id;
-  private final String name;
-  private final University university;
-  private final ArrayList<Book> books;
-  private final ArrayList<Course> courses;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  public User(long id, String name, University university, ArrayList<Book> books, ArrayList<Course> courses) {
-    this.id = id;
-    this.name = name;
-    this.university = university;
-    this.books = books;
-    this.courses = courses;
-  }
+  private String name;
+
+  private String surname;
 
   @Override
   public boolean equals(Object o) {

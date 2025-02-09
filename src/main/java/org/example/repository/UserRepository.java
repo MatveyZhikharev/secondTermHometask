@@ -1,19 +1,10 @@
 package org.example.repository;
 
 import org.example.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UserRepository {
-  long generateId();
+public interface UserRepository extends JpaRepository<User, Long> {
 
-  List<User> findAll();
-
-  User findById(long userId);
-
-  void create(User user);
-
-  void update(User user);
-
-  void delete(long userId);
 }
