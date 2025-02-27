@@ -1,33 +1,21 @@
 package org.example.entity;
 
-import jakarta.persistence.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
-@Entity
 @Data
-@Table(name = "users")
+@AllArgsConstructor
+@Schema(name = "User", description = "Пользователь")
 public class User {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  private String name;
-
-  private String surname;
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return id == user.id;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(id);
-  }
+  @Schema(name = "UserId", description = "Id")
+  UserId id;
+  @Schema(name = "Name", description = "Имя")
+  String name;
+  @Schema(name = "Surname", description = "Фамилия")
+  String surname;
+  @Schema(name = "Books", description = "Книги")
+  List<BookId> books;
 }
