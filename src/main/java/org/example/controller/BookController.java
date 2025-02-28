@@ -56,7 +56,7 @@ public interface BookController {
   ResponseEntity<Book> getBookById(
       @Parameter(description = "ID ", required = true)
       @Valid
-      @RequestBody BookId id
+      @PathVariable("id") BookId id
   );
 
   @Operation(summary = "Создание книги")

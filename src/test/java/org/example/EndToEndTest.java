@@ -56,6 +56,11 @@ public class EndToEndTest {
     assertEquals(HttpStatus.CREATED, createBookResponse.getStatusCode());
     assertEquals(new BookId(1), createBookResponse.getBody());
 
+    ResponseEntity<Book> getBook1DataResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", Book.class);
+    assertEquals(HttpStatus.OK, getBook1DataResponse.getStatusCode());
+    assertEquals(book.getId(), getBook1DataResponse.getBody().getId());
+
     ResponseEntity<User> getUser1DataResponse =
         restTemplate.getForEntity("http://localhost:" + port + "/api/users/1", User.class);
     assertEquals(HttpStatus.OK, getUser1DataResponse.getStatusCode());
