@@ -1,21 +1,47 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.example.entity.Book;
+import org.example.entity.BookId;
+import org.example.entity.User;
+import org.example.entity.UserId;
 import org.example.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.repository.exception.BookNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserService {
-  private static final Logger log = LoggerFactory.getLogger(UserService.class);
+import java.util.List;
 
+@Service
+@Slf4j
+public class UserService {
   private final UserRepository userRepository;
 
   public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
-  public void logCall() {
-    log.info("Вызван метод UserService");
+  public List<User> getAll() {
+    log.info("Получение всех пользователей");
+    return userRepository.findAll();
+  }
+
+  public User getById(UserId userId) {
+    log.info("Получение пользователя с ID: {}", userId.toString());
+    return userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
+  }
+
+  public UserId create(String name, String surname, List<BookId> books) {
+    log.info("Создание пользователя: {}", name + " " + surname);
+    return userRepository.create(name, surname, books);
+  }
+
+  public User update(UserId userId, User updatedUser) {
+    log.info("Обновление пользователя: {}", updatedUser);
+    userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
+    return userRepository.update(userId, updatedUser);
+  }
+  public void delete(UserId userId) {
+    log.info("Удаление пользователя с ID: {}", userId);
+    userRepository.delete(userId);
   }
 }
