@@ -1,9 +1,27 @@
 spring:
   application:
     name: spring-with-openapi
+  security:
+    user:
+      name: admin
+      password: secret
 springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
 server:
   port: 8080
+management:
+  endpoints:
+    web:
+      base-path: /admin/actuator
+      exposure:
+        include: *
+        exclude: shutdown
+  endpoint:
+    shutdown:
+      enabled: true
+info:
+  app:
+    name: MyApp
+    version: 1.0.0
