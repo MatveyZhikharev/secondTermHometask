@@ -40,10 +40,25 @@ public class BookService {
   }
 
   public Book update(BookId bookId, Book updatedBook) {
-    log.info("Обновление книги: {}", updatedBook);
+    log.info("Полное обновление книги: {}", updatedBook);
     bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
     User user = userRepository.findById(updatedBook.getAuthorId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthorId().toString()));
-    user.getBooks().add(bookId);
+    if (!user.getBooks().contains(bookId)) {
+      user.getBooks().add(bookId);
+    }
+    return bookRepository.update(bookId, updatedBook);
+  }
+
+  public Book patch(BookId bookId, Book updatedBook) {
+    log.info("Частичное обновление книги: {}", updatedBook);
+    Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
+    if (!updatedBook.getTitle().isEmpty()) {
+      book.setTitle(updatedBook.getTitle());
+    }
+    User user = userRepository.findById(updatedBook.getAuthorId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthorId().toString()));
+    if (!user.getBooks().contains(bookId)) {
+      user.getBooks().add(bookId);
+    }
     return bookRepository.update(bookId, updatedBook);
   }
 

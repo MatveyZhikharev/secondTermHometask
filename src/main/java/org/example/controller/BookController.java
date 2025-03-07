@@ -13,12 +13,14 @@ import org.example.entity.Book;
 import org.example.entity.BookId;
 import org.example.request.BookCreateRequest;
 import org.example.request.BookPatchRequest;
+import org.example.request.BookPutRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -56,7 +58,7 @@ public interface BookController {
   ResponseEntity<Book> getBookById(
       @Parameter(description = "ID ", required = true)
       @Valid
-      @PathVariable("id") BookId id
+      @PathVariable("id") BookId bookId
   );
 
   @Operation(summary = "Создание книги")
@@ -88,9 +90,27 @@ public interface BookController {
           content = {@Content})
   })
   @PatchMapping("/{id}")
-  ResponseEntity<Book> updateBook(
-      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId id,
+  ResponseEntity<Book> patchBook(
+      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId bookId,
       @Parameter(description = "Данные о книге") @Valid @RequestBody BookPatchRequest book);
+
+  @Operation(summary = "Частичное обновление данных книги")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Книга обновлена",
+          content = {@Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = Book.class)
+          )
+          }),
+      @ApiResponse(responseCode = "404", description = "Книга не найдена",
+          content = {@Content}),
+      @ApiResponse(responseCode = "400", description = "Неверные данные запроса",
+          content = {@Content})
+  })
+  @PutMapping("/{id}")
+  ResponseEntity<Book> updateBook(
+      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId bookId,
+      @Parameter(description = "Данные о книге") @Valid @RequestBody BookPutRequest book);
 
   @Operation(summary = "Удаление книги")
   @ApiResponses(value = {
@@ -101,6 +121,6 @@ public interface BookController {
   })
   @DeleteMapping("/{id}")
   ResponseEntity<Void> deleteBook(
-      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId id
+      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId bookId
   );
 }
