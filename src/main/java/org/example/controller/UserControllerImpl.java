@@ -3,6 +3,7 @@ package org.example.controller;
 import org.example.entity.User;
 import org.example.entity.UserId;
 import org.example.request.UserCreateRequest;
+import org.example.request.UserPatchRequest;
 import org.example.request.UserPutRequest;
 import org.example.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,12 @@ public class UserControllerImpl implements UserController {
   @Override
   public ResponseEntity<UserId> createUser(UserCreateRequest userDraft) {
     return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(userDraft.getName(), userDraft.getSurname(), userDraft.getBooks()));
+  }
+
+  @Override
+  public ResponseEntity<User> patchUser(UserId userId, UserPatchRequest user) {
+    User castedUser = new User(user.getId(), user.getName(), user.getSurname(), user.getBooks());
+    return ResponseEntity.ok(userService.patch(userId, castedUser));
   }
 
   @Override
