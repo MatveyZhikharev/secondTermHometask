@@ -1,14 +1,17 @@
 package org.example.controller;
 
+import org.example.Application;
 import org.example.entity.Book;
 import org.example.entity.BookId;
 import org.example.entity.UserId;
 import org.example.request.BookCreateRequest;
+import org.example.security.WebSecurityConfig;
 import org.example.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookControllerImpl.class)
+@ContextConfiguration(classes={Application.class, WebSecurityConfig.class})
 @ExtendWith(SpringExtension.class)
 class BookControllerImplTest {
   @Autowired
