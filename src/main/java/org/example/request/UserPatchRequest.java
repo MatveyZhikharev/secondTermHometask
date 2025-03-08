@@ -12,17 +12,15 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-@Schema(description = "Модель запроса полного обновления пользователя")
-public class UserPutRequest {
+@Schema(description = "Модель запроса частичного обновления пользователя")
+public class UserPatchRequest {
   @Schema(description = "ID пользователя")
   private UserId id;
 
-  @NotBlank
   @Size(min = 2, max = 16)
   @Schema(description = "Имя")
   private String name;
 
-  @NotBlank
   @Size(min = 1, max = 16)
   @Schema(description = "Фамилия")
   private String surname;
