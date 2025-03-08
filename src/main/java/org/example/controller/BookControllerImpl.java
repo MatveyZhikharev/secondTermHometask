@@ -4,6 +4,7 @@ import org.example.entity.Book;
 import org.example.entity.BookId;
 import org.example.request.BookCreateRequest;
 import org.example.request.BookPatchRequest;
+import org.example.request.BookPutRequest;
 import org.example.service.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,15 @@ public class BookControllerImpl implements BookController {
   }
 
   @Override
-  public ResponseEntity<Book> updateBook(BookId bookId, BookPatchRequest book) {
+  public ResponseEntity<Book> patchBook(BookId bookId, BookPatchRequest book) {
     Book castedBook = new Book(book.getId(), book.getTitle(), book.getUserId());
     return ResponseEntity.ok(bookService.update(bookId, castedBook));
+  }
+
+  @Override
+  public ResponseEntity<Book> updateBook(BookId bookId, BookPutRequest book) {
+    Book castedBook = new Book(book.getId(), book.getTitle(), book.getUserId());
+    return ResponseEntity.ok(bookService.patch(bookId, castedBook));
   }
 
   @Override

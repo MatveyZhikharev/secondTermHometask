@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.example.entity.User;
 import org.example.entity.UserId;
 import org.example.request.UserCreateRequest;
+import org.example.request.UserPatchRequest;
 import org.example.request.UserPutRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -56,7 +58,7 @@ public interface UserController {
   ResponseEntity<User> getUserById(
       @Parameter(description = "ID ", required = true)
       @Valid
-      @PathVariable("id") UserId id
+      @PathVariable("id") UserId userId
   );
 
   @Operation(summary = "Создание пользователя")
@@ -87,10 +89,28 @@ public interface UserController {
       @ApiResponse(responseCode = "400", description = "Неверные данные запроса",
           content = {@Content})
   })
-  @PatchMapping("/{id}")
+  @PutMapping("/{id}")
   ResponseEntity<User> updateUser(
-      @Parameter(description = "ID пользователя") @Valid @PathVariable("id") UserId id,
+      @Parameter(description = "ID пользователя") @Valid @PathVariable("id") UserId userId,
       @Parameter(description = "Данные о пользователе") @Valid @RequestBody UserPutRequest user);
+
+  @Operation(summary = "Частичное обновление данных пользователя")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Пользователь обновлён",
+          content = {@Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = User.class)
+          )
+          }),
+      @ApiResponse(responseCode = "404", description = "Пользователь не найден",
+          content = {@Content}),
+      @ApiResponse(responseCode = "400", description = "Неверные данные запроса",
+          content = {@Content})
+  })
+  @PatchMapping("/{id}")
+  ResponseEntity<User> patchUser(
+      @Parameter(description = "ID пользователя") @Valid @PathVariable("id") UserId userId,
+      @Parameter(description = "Данные о пользователе") @Valid @RequestBody UserPatchRequest user);
 
   @Operation(summary = "Удаление пользователя")
   @ApiResponses(value = {
@@ -101,6 +121,6 @@ public interface UserController {
   })
   @DeleteMapping("/{id}")
   ResponseEntity<Void> deleteUser(
-      @Parameter(description = "ID пользователя") @Valid @PathVariable("id") UserId id
+      @Parameter(description = "ID пользователя") @Valid @PathVariable("id") UserId userId
   );
 }
