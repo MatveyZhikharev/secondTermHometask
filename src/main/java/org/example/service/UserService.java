@@ -36,10 +36,26 @@ public class UserService {
   }
 
   public User update(UserId userId, User updatedUser) {
-    log.info("Обновление пользователя: {}", updatedUser);
+    log.info("Полное обновление пользователя: {}", updatedUser);
     userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
     return userRepository.update(userId, updatedUser);
   }
+
+  public User patch(UserId userId, User updatedUser) {
+    log.info("Частичное обновление пользователя: {}", updatedUser);
+    User user = userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
+    if (!updatedUser.getName().isEmpty()) {
+      user.setName(updatedUser.getName());
+    }
+    if (!updatedUser.getSurname().isEmpty()) {
+      user.setSurname(updatedUser.getSurname());
+    }
+    if (!updatedUser.getBooks().isEmpty()) {
+      user.setBooks(updatedUser.getBooks());
+    }
+    return userRepository.update(userId, updatedUser);
+  }
+
   public void delete(UserId userId) {
     log.info("Удаление пользователя с ID: {}", userId);
     userRepository.delete(userId);
