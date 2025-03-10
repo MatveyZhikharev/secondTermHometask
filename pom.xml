@@ -16,7 +16,7 @@
     <description>Hometask Zhikharev Matvey</description>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>17</java.version>
         <spring-boot.version>3.4.2</spring-boot.version>
     </properties>
 
@@ -76,6 +76,11 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
 
