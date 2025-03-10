@@ -42,7 +42,7 @@ public class UserService {
   }
 
   public User patch(UserId userId, User updatedUser) {
-    log.info("Частичное бновление пользователя: {}", updatedUser);
+    log.info("Частичное обновление пользователя: {}", updatedUser);
     User user = userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
     if (!updatedUser.getName().isEmpty()) {
       user.setName(updatedUser.getName());
