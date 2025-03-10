@@ -7,6 +7,7 @@ import org.example.entity.User;
 import org.example.entity.Book;
 import org.example.entity.UserId;
 import org.example.request.BookPatchRequest;
+import org.example.security.WebSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,12 +18,14 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(classes={Application.class, WebSecurityConfig.class})
 @ActiveProfiles("test")
 public class EndToEndTest {
   @LocalServerPort
