@@ -32,7 +32,9 @@ public class BookControllerImpl implements BookController {
 
   @Override
   public ResponseEntity<BookId> createBook(BookCreateRequest bookDraft) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(bookDraft.getTitle(), bookDraft.getAuthorId()));
+    return ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(
+        new Book(bookDraft.getId(), bookDraft.getTitle(), bookDraft.getAuthorId())
+    ));
   }
 
   @Override

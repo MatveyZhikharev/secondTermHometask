@@ -33,9 +33,9 @@ public class InMemoryBookRepository implements BookRepository {
   }
 
   @Override
-  public BookId create(String title, UserId authorId) {
+  public BookId create(Book book) {
     BookId id = new BookId(idCounter.getAndIncrement());
-    Book book = new Book(id, title, authorId);
+    book.setId(id);
     books.put(id, book);
     return id;
   }

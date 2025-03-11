@@ -61,7 +61,7 @@ class BookControllerImplTest {
 
   @Test
   void deleteBook() throws Exception {
-    bookService.create("", new UserId(1));
+    bookService.create(new Book(new BookId(1), "", null));
     mvc.perform(delete("/api/books/1"))
         .andExpect(status().isNoContent());
   }

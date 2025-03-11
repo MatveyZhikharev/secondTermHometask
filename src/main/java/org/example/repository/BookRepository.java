@@ -15,7 +15,7 @@ public interface BookRepository {
 
   void delete(BookId id);
 
-  BookId create(String title, UserId authorId);
+  BookId create(Book book);
 
   Book update(BookId bookId, Book updatedBook);
 }

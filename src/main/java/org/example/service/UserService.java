@@ -7,9 +7,11 @@ import org.example.entity.User;
 import org.example.entity.UserId;
 import org.example.repository.UserRepository;
 import org.example.repository.exception.BookNotFoundException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -20,9 +22,10 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  public List<User> getAll() {
+  @Async
+  public CompletableFuture<List<User>> getAll() {
     log.info("Получение всех пользователей");
-    return userRepository.findAll();
+    return CompletableFuture.completedFuture(userRepository.findAll());
   }
 
   public User getById(UserId userId) {
