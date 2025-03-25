@@ -13,6 +13,7 @@ import java.time.Instant;
 @Component
 public class LoggingAspect {
   public int aspectNumber;
+
   @Before("execution(* org.example.service.*.*(..))")
   public void logBefore(JoinPoint joinPoint) {
     System.out.println("Перед вызовом метода: " + joinPoint.getSignature().getName());
