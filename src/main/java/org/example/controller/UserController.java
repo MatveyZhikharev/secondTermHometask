@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Tag(name = "UsersControllerInterface", description = "Управление пользователями")
 @RequestMapping("api/users")
@@ -39,7 +40,7 @@ public interface UserController {
           })
   })
   @GetMapping("/")
-  ResponseEntity<List<User>> getAllUsers();
+  CompletableFuture<ResponseEntity<List<User>>> getAllUsers();
 
   @Operation(summary = "Получить пользователя по ID")
   @ApiResponses(value = {

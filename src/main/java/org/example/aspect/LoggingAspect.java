@@ -12,6 +12,7 @@ import java.time.Instant;
 @Aspect
 @Component
 public class LoggingAspect {
+  public int aspectNumber;
   @Before("execution(* org.example.service.*.*(..))")
   public void logBefore(JoinPoint joinPoint) {
     System.out.println("Перед вызовом метода: " + joinPoint.getSignature().getName());
@@ -20,7 +21,9 @@ public class LoggingAspect {
   @Around("execution(* org.example.controller.*.*(..))")
   public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
     long startTime = Instant.now().getEpochSecond();
+    ++aspectNumber;
     Object result = joinPoint.proceed();
+    ++aspectNumber;
     long endTime = Instant.now().getEpochSecond();
     System.out.println("Метод " + joinPoint.getSignature().getName()
         + " выполнен за " + (endTime - startTime) + " мс");

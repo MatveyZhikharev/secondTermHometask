@@ -63,6 +63,9 @@ public class BookService {
     if (!updatedBook.getTitle().isEmpty()) {
       book.setTitle(updatedBook.getTitle());
     }
+    if (!updatedBook.getAuthorId().toString().isEmpty()) {
+      book.setAuthorId(updatedBook.getAuthorId());
+    }
     User user = userRepository.findById(updatedBook.getAuthorId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthorId().toString()));
     if (!user.getBooks().contains(bookId)) {
       user.getBooks().add(bookId);

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@Schema(name = "User", description = "Пользователь")
+@Schema(name = "users", description = "Пользователь")
 public class User {
   @Schema(name = "UserId", description = "Id")
   UserId id;

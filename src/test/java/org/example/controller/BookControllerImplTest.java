@@ -4,7 +4,6 @@ import org.example.Application;
 import org.example.entity.Book;
 import org.example.entity.BookId;
 import org.example.entity.UserId;
-import org.example.request.BookCreateRequest;
 import org.example.security.WebSecurityConfig;
 import org.example.service.BookService;
 import org.junit.jupiter.api.Test;
