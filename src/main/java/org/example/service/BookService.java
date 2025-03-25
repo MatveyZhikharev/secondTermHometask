@@ -30,13 +30,13 @@ public class BookService {
     return bookRepository.findAll();
   }
 
-  @Cacheable(value = "bookById", key = "#bookId.hashCode()")
+  @Cacheable(value = "book", key = "#bookId.hashCode()")
   public Book getById(BookId bookId) {
     log.info("Получение книги с ID: {}", bookId.toString());
     return bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
   }
 
-  @CachePut(value = "book", key = "#book.id.hashCode()")
+  @CacheEvict(value = "books", allEntries = true)
   public BookId create(Book book) {
     log.info("Создание книги: {}", book.getTitle() + " " + book.getAuthorId());
     User user = userRepository.findById(book.getAuthorId()).orElseThrow(() -> new BookNotFoundException(book.getAuthorId().toString()));
@@ -70,9 +70,7 @@ public class BookService {
     if (!user.getBooks().contains(bookId)) {
       user.getBooks().add(bookId);
     }
-    var i = bookRepository.update(bookId, updatedBook);
-    System.out.println(i);
-    return i;
+    return bookRepository.update(bookId, updatedBook);
   }
 
   @CacheEvict(value = "book", key = "#bookId.hashCode()")

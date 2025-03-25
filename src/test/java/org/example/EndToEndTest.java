@@ -27,7 +27,7 @@ import java.util.ArrayList;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes={Application.class, WebSecurityConfig.class})
 @ActiveProfiles("test")
-public class EndToEndTest {
+public class  EndToEndTest {
   @LocalServerPort
   private int port;
 
