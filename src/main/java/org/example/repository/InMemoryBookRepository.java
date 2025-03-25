@@ -29,7 +29,7 @@ public class InMemoryBookRepository implements BookRepository {
 
   @Override
   public List<Book> findAll() {
-    String randomUrl = "https://ya.ru/";
+    String randomUrl = "https://mipt.ru/";
     String response = restTemplate.getForObject(randomUrl, String.class);
     System.out.println("Ответ RestTemplate: " + response);
     return new ArrayList<>(books.values());
