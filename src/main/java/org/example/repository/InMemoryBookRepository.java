@@ -37,7 +37,7 @@ public class InMemoryBookRepository implements BookRepository {
 
   @Override
   public Optional<Book> findById(BookId bookId) {
-    String randomUrl = "https://ya.ru/";
+    String randomUrl = "https://mipt.ru";
     String response = webClient.get()
         .uri(randomUrl)
         .retrieve()
