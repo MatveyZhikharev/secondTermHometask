@@ -6,7 +6,7 @@ import org.example.entity.BookId;
 import org.example.entity.User;
 import org.example.entity.Book;
 import org.example.entity.UserId;
-import org.example.request.BookPatchRequest;
+import org.example.request.BookPutRequest;
 import org.example.security.WebSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,7 @@ public class EndToEndTest {
     assertEquals(HttpStatus.OK, getUser1DataResponse.getStatusCode());
     assertEquals(book.getId(), getUser1DataResponse.getBody().getBooks().get(0));
 
-    BookPatchRequest newBook = new BookPatchRequest(new BookId(1), "BookOfUser2", new UserId(2));
+    BookPutRequest newBook = new BookPutRequest(new BookId(1), "BookOfUser2", new UserId(2));
     Book updatedBook = new Book(new BookId(1), "BookOfUser2", new UserId(2));
 
     restTemplate.put("http://localhost:" + port + "/api/books/1", newBook, Book.class);
