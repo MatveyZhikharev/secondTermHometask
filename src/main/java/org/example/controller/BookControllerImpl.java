@@ -52,7 +52,7 @@ public class BookControllerImpl implements BookController {
 
   @Override
   public ResponseEntity<Book> updateBook(BookId bookId, BookPutRequest book) {
-    Book castedBook = new Book(book.getId(), book.getTitle(), book.getUserId());
+    Book castedBook = new Book(book.getId(), book.getTitle(), book.getAuthorId());
     return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.patch(bookId, castedBook)));
   }
 
