@@ -70,7 +70,9 @@ public class BookService {
     if (!user.getBooks().contains(bookId)) {
       user.getBooks().add(bookId);
     }
-    return bookRepository.update(bookId, updatedBook);
+    var i = bookRepository.update(bookId, updatedBook);
+    System.out.println(i);
+    return i;
   }
 
   @CacheEvict(value = "book", key = "#bookId.hashCode()")

@@ -69,10 +69,10 @@ public class EndToEndTest {
     assertEquals(HttpStatus.OK, getUser1DataResponse.getStatusCode());
     assertEquals(book.getId(), getUser1DataResponse.getBody().getBooks().get(0));
 
-    BookPutRequest newBook = new BookPutRequest(new BookId(1), "BookOfUser2", new UserId(2));
+    BookPutRequest newBookRequest = new BookPutRequest(new BookId(1), "BookOfUser2", new UserId(2));
     Book updatedBook = new Book(new BookId(1), "BookOfUser2", new UserId(2));
 
-    restTemplate.put("http://localhost:" + port + "/api/books/1", newBook, Book.class);
+    restTemplate.put("http://localhost:" + port + "/api/books/1", newBookRequest, Book.class);
     ResponseEntity<Book> putBookResponse =
         restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", Book.class);
     assertEquals(updatedBook, putBookResponse.getBody());
