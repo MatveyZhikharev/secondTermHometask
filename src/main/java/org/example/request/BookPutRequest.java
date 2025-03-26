@@ -21,5 +21,5 @@ public class BookPutRequest {
 
   @NotNull
   @Schema(description = "ID пользователя, связанного с книгой")
-  private UserId userId;
+  private UserId authorId;
 }

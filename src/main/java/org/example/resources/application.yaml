@@ -11,6 +11,10 @@ springdoc:
     path: /swagger-ui.html
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 200
+      min: 10
 management:
   endpoints:
     web:
@@ -22,3 +26,17 @@ info:
   app:
     name: MyApp
     version: 1.0.0
+resilience4j.ratelimiter:
+  instances:
+    apiRateLimiter:
+      limit-for-period: 5
+      limit-refresh-period: 10s
+      timeout-duration: 0
+resilience4j.circuitbreaker:
+  instances:
+    apiCircuitBreaker:
+      failure-rate-threshold: 50
+      wait-duration-in-open-state: 10s
+      permitted-number-of-calls-in-half-open-state: 3
+      sliding-window-type: count_based
+      sliding-window-size: 10

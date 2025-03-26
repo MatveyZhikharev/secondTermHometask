@@ -1,5 +1,9 @@
 spring:
+  datasource:
+    url: jdbc:tc:postgresql:13:testdb
+    username: admin
+    password: admin
   application:
-    name: spring-with-openapi-test
+    name: spring-test
 server:
   port: 8082

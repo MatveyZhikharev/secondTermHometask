@@ -4,7 +4,6 @@ import org.example.Application;
 import org.example.entity.Book;
 import org.example.entity.BookId;
 import org.example.entity.UserId;
-import org.example.request.BookCreateRequest;
 import org.example.security.WebSecurityConfig;
 import org.example.service.BookService;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,7 +59,7 @@ class BookControllerImplTest {
 
   @Test
   void deleteBook() throws Exception {
-    bookService.create("", new UserId(1));
+    bookService.create(new Book(new BookId(1), "", null));
     mvc.perform(delete("/api/books/1"))
         .andExpect(status().isNoContent());
   }

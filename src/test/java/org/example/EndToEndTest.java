@@ -6,7 +6,7 @@ import org.example.entity.BookId;
 import org.example.entity.User;
 import org.example.entity.Book;
 import org.example.entity.UserId;
-import org.example.request.BookPatchRequest;
+import org.example.request.BookPutRequest;
 import org.example.security.WebSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes={Application.class, WebSecurityConfig.class})
 @ActiveProfiles("test")
-public class EndToEndTest {
+public class  EndToEndTest {
   @LocalServerPort
   private int port;
 
@@ -69,11 +69,14 @@ public class EndToEndTest {
     assertEquals(HttpStatus.OK, getUser1DataResponse.getStatusCode());
     assertEquals(book.getId(), getUser1DataResponse.getBody().getBooks().get(0));
 
-    BookPatchRequest newBook = new BookPatchRequest(new BookId(1), "BookOfUser2", new UserId(2));
+    BookPutRequest newBookRequest = new BookPutRequest(new BookId(1), "BookOfUser2", new UserId(2));
     Book updatedBook = new Book(new BookId(1), "BookOfUser2", new UserId(2));
-    Book patchBookResponse =
-        restTemplate.patchForObject("http://localhost:" + port + "/api/books/1", newBook, Book.class);
-    assertEquals(patchBookResponse, updatedBook);
+
+    restTemplate.put("http://localhost:" + port + "/api/books/1", newBookRequest, Book.class);
+    ResponseEntity<Book> putBookResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", Book.class);
+    assertEquals(updatedBook, putBookResponse.getBody());
+
     ResponseEntity<User> getUser2DataResponse =
         restTemplate.getForEntity("http://localhost:" + port + "/api/users/2", User.class);
     assertEquals(HttpStatus.OK, getUser2DataResponse.getStatusCode());

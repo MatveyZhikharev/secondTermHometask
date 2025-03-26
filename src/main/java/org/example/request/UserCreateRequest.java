@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.entity.BookId;
+import org.example.entity.UserId;
 
 import java.util.List;
 
@@ -13,6 +14,9 @@ import java.util.List;
 @Data
 @Schema(description = "Модель запроса создания пользователя")
 public class UserCreateRequest {
+  @Schema(description = "Уникальный идентификатор пользователя")
+  private UserId id;
+
   @NotBlank
   @Size(min = 2, max = 16)
   @Schema(description = "Имя")
