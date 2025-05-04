@@ -9,8 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.example.entity.Book;
-import org.example.entity.BookId;
+import org.example.Dto.BookDto;
 import org.example.request.BookCreateRequest;
 import org.example.request.BookPatchRequest;
 import org.example.request.BookPutRequest;
@@ -34,19 +33,19 @@ public interface BookController {
       @ApiResponse(responseCode = "200", description = "Все книги получены",
           content = {@Content(
               mediaType = "application/json",
-              array = @ArraySchema(schema = @Schema(implementation = Book.class))
+              array = @ArraySchema(schema = @Schema(implementation = BookDto.class))
           )
           })
   })
   @GetMapping("/")
-  ResponseEntity<List<Book>> getAllBooks();
+  ResponseEntity<List<BookDto>> getAllBooks();
 
   @Operation(summary = "Получить книгу по ID")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Книга получена",
           content = {@Content(
               mediaType = "application/json",
-              schema = @Schema(implementation = Book.class)
+              schema = @Schema(implementation = BookDto.class)
           )
           }),
       @ApiResponse(responseCode = "400", description = "Неверные данные запроса",
@@ -55,10 +54,10 @@ public interface BookController {
           content = {@Content})
   })
   @GetMapping("/{id}")
-  ResponseEntity<Book> getBookById(
+  ResponseEntity<BookDto> getBookById(
       @Parameter(description = "ID ", required = true)
       @Valid
-      @PathVariable("id") BookId bookId
+      @PathVariable("id") Long bookId
   );
 
   @Operation(summary = "Создание книги")
@@ -72,7 +71,7 @@ public interface BookController {
           content = {@Content}),
   })
   @PostMapping("/")
-  ResponseEntity<BookId> createBook(
+  ResponseEntity<Long> createBook(
       @Parameter(description = "Данные о книге")
       @Valid @RequestBody BookCreateRequest bookDraft);
 
@@ -81,7 +80,7 @@ public interface BookController {
       @ApiResponse(responseCode = "200", description = "Книга обновлена",
           content = {@Content(
               mediaType = "application/json",
-              schema = @Schema(implementation = Book.class)
+              schema = @Schema(implementation = BookDto.class)
           )
           }),
       @ApiResponse(responseCode = "404", description = "Книга не найдена",
@@ -90,8 +89,8 @@ public interface BookController {
           content = {@Content})
   })
   @PatchMapping("/{id}")
-  ResponseEntity<Book> patchBook(
-      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId bookId,
+  ResponseEntity<BookDto> patchBook(
+      @Parameter(description = "ID книги") @Valid @PathVariable("id") Long bookId,
       @Parameter(description = "Данные о книге") @Valid @RequestBody BookPatchRequest book);
 
   @Operation(summary = "Частичное обновление данных книги")
@@ -99,7 +98,7 @@ public interface BookController {
       @ApiResponse(responseCode = "200", description = "Книга обновлена",
           content = {@Content(
               mediaType = "application/json",
-              schema = @Schema(implementation = Book.class)
+              schema = @Schema(implementation = BookDto.class)
           )
           }),
       @ApiResponse(responseCode = "404", description = "Книга не найдена",
@@ -108,8 +107,8 @@ public interface BookController {
           content = {@Content})
   })
   @PutMapping("/{id}")
-  ResponseEntity<Book> updateBook(
-      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId bookId,
+  ResponseEntity<BookDto> updateBook(
+      @Parameter(description = "ID книги") @Valid @PathVariable("id") Long bookId,
       @Parameter(description = "Данные о книге") @Valid @RequestBody BookPutRequest book);
 
   @Operation(summary = "Удаление книги")
@@ -121,6 +120,6 @@ public interface BookController {
   })
   @DeleteMapping("/{id}")
   ResponseEntity<Void> deleteBook(
-      @Parameter(description = "ID книги") @Valid @PathVariable("id") BookId bookId
+      @Parameter(description = "ID книги") @Valid @PathVariable("id") Long bookId
   );
 }

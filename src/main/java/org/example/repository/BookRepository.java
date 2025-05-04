@@ -1,21 +1,13 @@
 package org.example.repository;
 
 
-import org.example.entity.Book;
-import org.example.entity.BookId;
-import org.example.entity.UserId;
+import org.example.entity.BookEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface BookRepository {
-  List<Book> findAll();
-
-  Optional<Book> findById(BookId id);
-
-  void delete(BookId id);
-
-  BookId create(Book book);
-
-  Book update(BookId bookId, Book updatedBook);
+@Repository
+public interface BookRepository extends JpaRepository<BookEntity, Long> {
+  Optional<BookEntity> findById(Long bookId);
 }

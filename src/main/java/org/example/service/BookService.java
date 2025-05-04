@@ -2,10 +2,9 @@ package org.example.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.entity.Book;
-import org.example.entity.BookId;
-import org.example.entity.User;
-import org.example.entity.UserId;
+import org.example.Dto.BookDto;
+import org.example.entity.BookEntity;
+import org.example.entity.UserEntity;
 import org.example.repository.BookRepository;
 import org.example.repository.UserRepository;
 import org.example.repository.exception.BookNotFoundException;
@@ -14,7 +13,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,60 +26,76 @@ public class BookService {
   private final UserRepository userRepository;
 
   @Cacheable(value = "books")
-  public List<Book> getAll() {
+  @Transactional(readOnly = true)
+  public List<BookDto> getAll() {
     log.info("Получение всех книг");
-    return bookRepository.findAll();
+    ArrayList<BookDto> bookDtos = new ArrayList<>();
+    for (BookEntity book : bookRepository.findAll()) {
+      bookDtos.add(new BookDto(book));
+    }
+    return bookDtos;
   }
 
   @Cacheable(value = "book", key = "#bookId.hashCode()")
-  public Book getById(BookId bookId) {
+  @Transactional(readOnly = true)
+  public BookDto getById(Long bookId) {
     log.info("Получение книги с ID: {}", bookId.toString());
-    return bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
+    return new BookDto(bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString())));
   }
 
   @CacheEvict(value = "books", allEntries = true)
-  public BookId create(Book book) {
-    log.info("Создание книги: {}", book.getTitle() + " " + book.getAuthorId());
-    User user = userRepository.findById(book.getAuthorId()).orElseThrow(() -> new BookNotFoundException(book.getAuthorId().toString()));
-    BookId bookId = bookRepository.create(book);
-    user.getBooks().add(bookId);
+  @Transactional
+  public Long create(String title, Long authorId) {
+    log.info("Создание книги: {}", title + " " + authorId);
+    UserEntity user = userRepository.findById(authorId).orElseThrow(() -> new BookNotFoundException(authorId.toString()));
+    BookEntity book = new BookEntity();
+    book.setTitle(title);
+    book.setAuthor(user);
+
+    Long bookId = bookRepository.save(book).getId();
+    user.getBooks().add(book);
+    userRepository.save(user);
     return bookId;
   }
 
   @CachePut(value = "book", key = "#bookId.hashCode()")
-  public Book update(BookId bookId, Book updatedBook) {
+  @Transactional
+  public BookDto update(Long bookId, BookEntity updatedBook) {
     log.info("Полное обновление книги: {}", updatedBook);
     bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
-    User user = userRepository.findById(updatedBook.getAuthorId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthorId().toString()));
+    UserEntity user = userRepository.findById(
+        updatedBook.getAuthor().getId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthor().getId().toString()));
     if (!user.getBooks().contains(bookId)) {
-      user.getBooks().add(bookId);
+      user.getBooks().add(updatedBook);
     }
-    return bookRepository.update(bookId, updatedBook);
+    userRepository.save(user);
+    return new BookDto(bookRepository.save(updatedBook));
   }
 
   @CachePut(value = "book", key = "#bookId.hashCode()")
-  public Book patch(BookId bookId, Book updatedBook) {
+  @Transactional
+  public BookDto patch(Long bookId, BookEntity updatedBook) {
     log.info("Частичное обновление книги: {}", updatedBook);
-    Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
+    BookEntity book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
     if (!updatedBook.getTitle().isEmpty()) {
       book.setTitle(updatedBook.getTitle());
     }
-    if (!updatedBook.getAuthorId().toString().isEmpty()) {
-      book.setAuthorId(updatedBook.getAuthorId());
-    }
-    User user = userRepository.findById(updatedBook.getAuthorId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthorId().toString()));
+    UserEntity user = userRepository.findById(
+        updatedBook.getAuthor().getId()).orElseThrow(() -> new BookNotFoundException(updatedBook.getAuthor().getId().toString()));
     if (!user.getBooks().contains(bookId)) {
-      user.getBooks().add(bookId);
+      user.getBooks().add(updatedBook);
     }
-    return bookRepository.update(bookId, updatedBook);
+    userRepository.save(user);
+    return new BookDto(bookRepository.save(updatedBook));
   }
 
   @CacheEvict(value = "book", key = "#bookId.hashCode()")
-  public void delete(BookId bookId) {
+  @Transactional
+  public void delete(Long bookId) {
     log.info("Удаление книги с ID: {}", bookId);
-    Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
-    User user = userRepository.findById(book.getAuthorId()).orElseThrow(() -> new UserNotFoundException(bookId.toString()));
+    BookEntity book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
+    UserEntity user = userRepository.findById(book.getAuthor().getId()).orElseThrow(() -> new UserNotFoundException(bookId.toString()));
     user.getBooks().remove(bookId);
-    bookRepository.delete(bookId);
+    bookRepository.delete(bookRepository.getById(bookId));
   }
 }
