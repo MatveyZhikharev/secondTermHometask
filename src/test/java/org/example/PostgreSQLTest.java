@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 public class PostgreSQLTest {
   @Container
-  private static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:13")
+  private static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17")
       .withDatabaseName("testdb")
       .withUsername("admin")
       .withPassword("admin")

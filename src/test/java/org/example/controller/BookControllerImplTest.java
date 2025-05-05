@@ -1,9 +1,10 @@
 package org.example.controller;
 
 import org.example.Application;
-import org.example.entity.Book;
-import org.example.entity.BookId;
-import org.example.entity.UserId;
+import org.example.Dto.BookDto;
+import org.example.entity.BookEntity;
+import org.example.entity.UserEntity;
+import org.example.repository.UserRepository;
 import org.example.security.WebSecurityConfig;
 import org.example.service.BookService;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -33,12 +35,15 @@ class BookControllerImplTest {
   @MockitoBean
   private BookService bookService;
 
+  @MockitoBean
+  private UserRepository userRepository;
+
   @Test
   void getAllBooks() throws Exception {
     when(bookService.getAll()).thenReturn(
         List.of(
-            new Book(new BookId(1), "book1", new UserId(1)),
-            new Book(new BookId(2), "book2", new UserId(1))
+            new BookDto(1L, "book1", 1L),
+            new BookDto(2L, "book2", 1L)
         )
     );
     mvc.perform(get("/api/books/"))
@@ -48,18 +53,18 @@ class BookControllerImplTest {
 
   @Test
   void getBookById() throws Exception {
-    when(bookService.getById(new BookId(1)))
-        .thenReturn(new Book(new BookId(1), "book1", new UserId(1)));
+    when(bookService.getById(1L))
+        .thenReturn(new BookDto(new BookEntity(1L, "book1", new UserEntity(1L, "", "", new ArrayList<>()))));
     mvc.perform(get("/api/books/1"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id.id").value(1))
+        .andExpect(jsonPath("$.id").value(1))
         .andExpect(jsonPath("$.title").value("book1"))
-        .andExpect(jsonPath("$.authorId.id").value(1));
+        .andExpect(jsonPath("$.authorId").value(1));
   }
 
   @Test
   void deleteBook() throws Exception {
-    bookService.create(new Book(new BookId(1), "", null));
+    bookService.create("", 1L);
     mvc.perform(delete("/api/books/1"))
         .andExpect(status().isNoContent());
   }

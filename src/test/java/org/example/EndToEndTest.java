@@ -2,10 +2,11 @@ package org.example;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.example.entity.BookId;
-import org.example.entity.User;
-import org.example.entity.Book;
-import org.example.entity.UserId;
+import org.example.Dto.BookDto;
+import org.example.Dto.UserDto;
+import org.example.entity.UserEntity;
+import org.example.entity.BookEntity;
+import org.example.request.BookCreateRequest;
 import org.example.request.BookPutRequest;
 import org.example.security.WebSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -37,54 +38,54 @@ public class  EndToEndTest {
   @Test
   @DisplayName("Тест всей логики приложения")
   public void E2ETest() {
-    User user1 = new User(new UserId(1), "User1", "User1ov", new ArrayList<>());
-    User user2 = new User(new UserId(2), "User2", "User2ov", new ArrayList<>());
-    ResponseEntity<UserId> createUserResponse1 =
-        restTemplate.postForEntity("http://localhost:" + port + "/api/users/", user1, UserId.class);
-    ResponseEntity<UserId> createUserResponse2 =
-        restTemplate.postForEntity("http://localhost:" + port + "/api/users/", user2, UserId.class);
+    UserDto user1 = new UserDto(1L, "User1", "User1ov", new ArrayList<>());
+    UserDto user2 = new UserDto(2L, "User2", "User2ov", new ArrayList<>());
+    ResponseEntity<Long> createUserResponse1 =
+        restTemplate.postForEntity("http://localhost:" + port + "/api/users/", user1, Long.class);
+    ResponseEntity<Long> createUserResponse2 =
+        restTemplate.postForEntity("http://localhost:" + port + "/api/users/", user2, Long.class);
     assertEquals(HttpStatus.CREATED, createUserResponse1.getStatusCode());
     assertEquals(HttpStatus.CREATED, createUserResponse2.getStatusCode());
-    assertEquals(new UserId(1), createUserResponse1.getBody());
-    assertEquals(new UserId(2), createUserResponse2.getBody());
+    assertEquals(1L, createUserResponse1.getBody());
+    assertEquals(2L, createUserResponse2.getBody());
 
-    ResponseEntity<User> getUserResponse =
-        restTemplate.getForEntity("http://localhost:" + port + "/api/users/1", User.class);
+    ResponseEntity<UserDto> getUserResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/users/1", UserDto.class);
     assertEquals(HttpStatus.OK, getUserResponse.getStatusCode());
     assertEquals(user1, getUserResponse.getBody());
 
-    Book book = new Book(new BookId(1), "BookOfUser1", new UserId(1));
-    ResponseEntity<BookId> createBookResponse =
-        restTemplate.postForEntity("http://localhost:" + port + "/api/books/", book, BookId.class);
+    BookCreateRequest bookEntity = new BookCreateRequest(1L, "BookOfUser1", 1L);
+    ResponseEntity<String> createBookResponse =
+        restTemplate.postForEntity("http://localhost:" + port + "/api/books/", bookEntity, String.class);
     assertEquals(HttpStatus.CREATED, createBookResponse.getStatusCode());
-    assertEquals(new BookId(1), createBookResponse.getBody());
+    assertEquals("1", createBookResponse.getBody());
 
-    ResponseEntity<Book> getBook1DataResponse =
-        restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", Book.class);
+    ResponseEntity<BookDto> getBook1DataResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", BookDto.class);
     assertEquals(HttpStatus.OK, getBook1DataResponse.getStatusCode());
-    assertEquals(book.getId(), getBook1DataResponse.getBody().getId());
+    assertEquals(bookEntity.getId(), getBook1DataResponse.getBody().getId());
 
-    ResponseEntity<User> getUser1DataResponse =
-        restTemplate.getForEntity("http://localhost:" + port + "/api/users/1", User.class);
+    ResponseEntity<UserDto> getUser1DataResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/users/1", UserDto.class);
     assertEquals(HttpStatus.OK, getUser1DataResponse.getStatusCode());
-    assertEquals(book.getId(), getUser1DataResponse.getBody().getBooks().get(0));
+    assertEquals(bookEntity.getId(), getUser1DataResponse.getBody().getBooks().get(0));
 
-    BookPutRequest newBookRequest = new BookPutRequest(new BookId(1), "BookOfUser2", new UserId(2));
-    Book updatedBook = new Book(new BookId(1), "BookOfUser2", new UserId(2));
+    BookPutRequest newBookRequest = new BookPutRequest(1L, "BookOfUser2", 2L);
+    BookDto updatedBook = new BookDto(1L, "BookOfUser2", 2L);
 
-    restTemplate.put("http://localhost:" + port + "/api/books/1", newBookRequest, Book.class);
-    ResponseEntity<Book> putBookResponse =
-        restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", Book.class);
+    restTemplate.put("http://localhost:" + port + "/api/books/1", newBookRequest, BookEntity.class);
+    ResponseEntity<BookDto> putBookResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/books/1", BookDto.class);
     assertEquals(updatedBook, putBookResponse.getBody());
 
-    ResponseEntity<User> getUser2DataResponse =
-        restTemplate.getForEntity("http://localhost:" + port + "/api/users/2", User.class);
+    ResponseEntity<UserDto> getUser2DataResponse =
+        restTemplate.getForEntity("http://localhost:" + port + "/api/users/2", UserDto.class);
     assertEquals(HttpStatus.OK, getUser2DataResponse.getStatusCode());
     assertEquals(updatedBook.getId(), getUser2DataResponse.getBody().getBooks().get(0));
 
     restTemplate.delete("http://localhost:" + port + "/api/books/1", updatedBook);
     getUser2DataResponse =
-        restTemplate.getForEntity("http://localhost:" + port + "/api/users/2", User.class);
+        restTemplate.getForEntity("http://localhost:" + port + "/api/users/2", UserDto.class);
     assertEquals(new ArrayList<>(), getUser2DataResponse.getBody().getBooks());
   }
 }
