@@ -1,6 +1,7 @@
 package org.example.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +36,7 @@ public class UserEntity {
 
   @Schema(name = "Name", description = "Имя")
   @Column(name = "name")
+  @NotBlank
   private String name;
 
   @Schema(name = "Surname", description = "Фамилия")
