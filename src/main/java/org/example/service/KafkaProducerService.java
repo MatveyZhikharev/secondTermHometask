@@ -1,5 +1,6 @@
 package org.example.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.example.Dto.MessageDto;
@@ -24,9 +25,13 @@ public class KafkaProducerService {
     this.topic = topic;
   }
 
-  @SneakyThrows
   public void sendMessage(MessageDto messageDto) {
-    String message = objectMapper.writeValueAsString(messageDto);
+    String message = null;
+    try {
+      message = objectMapper.writeValueAsString(messageDto);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
 
     CompletableFuture<SendResult<String, String>> sendResult = kafkaTemplate.send(topic, message);
   }

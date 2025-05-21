@@ -22,6 +22,9 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     baseline-version: 1
+  kafka:
+    bootstrap-servers: localhost:29093
+topic-to-send-message: audit
 springdoc:
   swagger-ui:
     enabled: true

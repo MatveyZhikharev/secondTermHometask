@@ -75,7 +75,6 @@ public interface UserController {
   })
   @PostMapping("/")
   ResponseEntity<Long> createUser(
-      @RequestHeader(value = "requesterId", required = true) String requesterId,
       @Parameter(description = "Данные о пользователе")
       @Valid @RequestBody UserCreateRequest userDraft);
 
