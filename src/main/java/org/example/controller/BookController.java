@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public interface BookController {
           })
   })
   @GetMapping("/")
-  ResponseEntity<List<BookDto>> getAllBooks();
+  ResponseEntity<List<BookDto>> getAllBooks(@RequestHeader(value = "requesterId", required = true) String requesterId);
 
   @Operation(summary = "Получить книгу по ID")
   @ApiResponses(value = {
@@ -55,6 +56,7 @@ public interface BookController {
   })
   @GetMapping("/{id}")
   ResponseEntity<BookDto> getBookById(
+      @RequestHeader(value = "requesterId", required = true) String requesterId,
       @Parameter(description = "ID ", required = true)
       @Valid
       @PathVariable("id") Long bookId
@@ -72,6 +74,7 @@ public interface BookController {
   })
   @PostMapping("/")
   ResponseEntity<Long> createBook(
+      @RequestHeader(value = "requesterId", required = true) String requesterId,
       @Parameter(description = "Данные о книге")
       @Valid @RequestBody BookCreateRequest bookDraft);
 
@@ -90,6 +93,7 @@ public interface BookController {
   })
   @PatchMapping("/{id}")
   ResponseEntity<BookDto> patchBook(
+      @RequestHeader(value = "requesterId", required = true) String requesterId,
       @Parameter(description = "ID книги") @Valid @PathVariable("id") Long bookId,
       @Parameter(description = "Данные о книге") @Valid @RequestBody BookPatchRequest book);
 
@@ -108,6 +112,7 @@ public interface BookController {
   })
   @PutMapping("/{id}")
   ResponseEntity<BookDto> updateBook(
+      @RequestHeader(value = "requesterId", required = true) String requesterId,
       @Parameter(description = "ID книги") @Valid @PathVariable("id") Long bookId,
       @Parameter(description = "Данные о книге") @Valid @RequestBody BookPutRequest book);
 
@@ -120,6 +125,7 @@ public interface BookController {
   })
   @DeleteMapping("/{id}")
   ResponseEntity<Void> deleteBook(
+      @RequestHeader(value = "requesterId", required = true) String requesterId,
       @Parameter(description = "ID книги") @Valid @PathVariable("id") Long bookId
   );
 }

@@ -30,36 +30,36 @@ public class BookControllerImpl implements BookController {
   }
 
   @Override
-  public ResponseEntity<List<BookDto>> getAllBooks() {
+  public ResponseEntity<List<BookDto>> getAllBooks(String requesterId) {
     return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.getAll()));
   }
 
   @Override
-  public ResponseEntity<BookDto> getBookById(Long bookId) {
+  public ResponseEntity<BookDto> getBookById(String requesterId, Long bookId) {
     return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.getById(bookId)));
   }
 
   @Override
-  public ResponseEntity<Long> createBook(BookCreateRequest bookDraft) {
+  public ResponseEntity<Long> createBook(String requesterId, BookCreateRequest bookDraft) {
     return rateLimiter.executeSupplier(
         () -> ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(bookDraft.getTitle(), bookDraft.getAuthorId()))
     );
   }
 
   @Override
-  public ResponseEntity<BookDto> patchBook(Long bookId, BookPatchRequest book) {
+  public ResponseEntity<BookDto> patchBook(String requesterId, Long bookId, BookPatchRequest book) {
     BookEntity castedBook = new BookEntity(book.getId(), book.getTitle(), userRepository.findById(bookId).get());
     return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.update(bookId, castedBook)));
   }
 
   @Override
-  public ResponseEntity<BookDto> updateBook(Long bookId, BookPutRequest book) {
+  public ResponseEntity<BookDto> updateBook(String requesterId, Long bookId, BookPutRequest book) {
     BookEntity castedBook = new BookEntity(book.getId(), book.getTitle(), userRepository.findById(book.getAuthorId()).get());
     return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.patch(bookId, castedBook)));
   }
 
   @Override
-  public ResponseEntity<Void> deleteBook(Long bookId) {
+  public ResponseEntity<Void> deleteBook(String requesterId, Long bookId) {
     bookService.delete(bookId);
     return rateLimiter.executeSupplier(() -> ResponseEntity.noContent().build());
   }
