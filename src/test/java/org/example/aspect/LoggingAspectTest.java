@@ -22,7 +22,7 @@ class LoggingAspectTest {
   @Test
   public void testLoggingAspect() {
     for (int i = 1; i < 5; i++) {
-      userController.getAllUsers();
+      userController.getAllUsers(0L);
       assertEquals(i * 2, loggingAspect.aspectNumber);
     }
   }

@@ -1,22 +1,27 @@
 package org.example.Dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class MessageDto {
-  private UUID userId;
+  private Long userId;
   private Instant timestamp;
   private String type;
   private String log;
 
-  public UUID getUserId() {
+  public Long getUserId() {
     return userId;
   }
 
-  public void setUserId(UUID userId) {
+  public void setUserId(Long userId) {
     this.userId = userId;
   }
 
@@ -42,5 +47,18 @@ public class MessageDto {
 
   public void setTimestamp(Instant timestamp) {
     this.timestamp = timestamp;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    MessageDto that = (MessageDto) o;
+    return Objects.equals(userId, that.userId) && Objects.equals(timestamp, that.timestamp) && Objects.equals(type, that.type) && Objects.equals(log, that.log);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(userId, timestamp, type, log);
   }
 }

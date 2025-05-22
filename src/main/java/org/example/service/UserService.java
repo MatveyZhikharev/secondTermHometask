@@ -34,7 +34,7 @@ public class UserService {
 
   @Async
   @Transactional(readOnly = true)
-  public CompletableFuture<List<UserDto>> getAll(String userId) {
+  public CompletableFuture<List<UserDto>> getAll(Long requesterId) {
     log.info("Получение всех пользователей");
     ArrayList<UserDto> userDtos = new ArrayList<>();
     for (UserEntity userEntity : userRepository.findAll()) {
@@ -42,9 +42,9 @@ public class UserService {
     }
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(userId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
-            .log("User with ID: " + userId + " got all users")
+            .log("User with ID: " + requesterId + " got all users")
             .build()
     );
     return CompletableFuture.completedFuture(userDtos);
@@ -53,12 +53,12 @@ public class UserService {
   // At Least Once
   @Retryable(value = RuntimeException.class, maxAttempts = 5, backoff = @Backoff(delay = 10000))
   @Transactional(readOnly = true)
-  public UserDto getById(String requesterId, Long userId) {
+  public UserDto getById(Long requesterId, Long userId) {
     log.info("Получение пользователя с ID: {}", userId.toString());
     UserEntity user = userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " got user" + user)
             .build()
@@ -82,7 +82,7 @@ public class UserService {
     }
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(user.getId().toString()))
+            .userId(user.getId())
             .type(Action.SELECT.toString())
             .log("User with ID: " + user.getId() + " updated user: " + user.getId())
             .build()
@@ -91,13 +91,13 @@ public class UserService {
   }
 
   @Transactional
-  public UserDto update(String requesterId, Long userId, UserEntity updatedUser) {
+  public UserDto update(Long requesterId, Long userId, UserEntity updatedUser) {
     log.info("Полное обновление пользователя: {}", updatedUser);
     userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
     updatedUser.setId(userId);
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " updated user: " + updatedUser)
             .build()
@@ -106,7 +106,7 @@ public class UserService {
   }
 
   @Transactional
-  public UserDto patch(String requesterId, Long userId, UserEntity updatedUser) {
+  public UserDto patch(Long requesterId, Long userId, UserEntity updatedUser) {
     log.info("Частичное обновление пользователя: {}", updatedUser);
     UserEntity user = userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
     if (!updatedUser.getName().isEmpty()) {
@@ -120,7 +120,7 @@ public class UserService {
     }
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " patched user: " + updatedUser)
             .build()
@@ -129,12 +129,12 @@ public class UserService {
   }
 
   @Transactional
-  public void delete(String requesterId, Long userId) {
+  public void delete(Long requesterId, Long userId) {
     log.info("Удаление пользователя с ID: {}", userId);
     UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId.toString()));
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " deleted user: " + user)
             .build()

@@ -31,7 +31,7 @@ public class BookService {
 
   @Cacheable(value = "books")
   @Transactional(readOnly = true)
-  public List<BookDto> getAll(String requesterId) {
+  public List<BookDto> getAll(Long requesterId) {
     log.info("Получение всех книг");
     ArrayList<BookDto> bookDtos = new ArrayList<>();
     for (BookEntity book : bookRepository.findAll()) {
@@ -39,7 +39,7 @@ public class BookService {
     }
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " got all books")
             .build()
@@ -49,11 +49,11 @@ public class BookService {
 
   @Cacheable(value = "book", key = "#bookId.hashCode()")
   @Transactional(readOnly = true)
-  public BookDto getById(String requesterId, Long bookId) {
+  public BookDto getById(Long requesterId, Long bookId) {
     log.info("Получение книги с ID: {}", bookId.toString());
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " got book with ID: " + bookId)
             .build()
@@ -63,7 +63,7 @@ public class BookService {
 
   @CacheEvict(value = "books", allEntries = true)
   @Transactional
-  public Long create(String requesterId, String title, Long authorId) {
+  public Long create(Long requesterId, String title, Long authorId) {
     log.info("Создание книги: {}", title + " " + authorId);
     UserEntity user = userRepository.findById(authorId).orElseThrow(() -> new BookNotFoundException(authorId.toString()));
     BookEntity book = new BookEntity();
@@ -75,7 +75,7 @@ public class BookService {
     userRepository.save(user);
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " created book: " + book)
             .build()
@@ -85,7 +85,7 @@ public class BookService {
 
   @CachePut(value = "book", key = "#bookId.hashCode()")
   @Transactional
-  public BookDto update(String requesterId, Long bookId, BookEntity updatedBook) {
+  public BookDto update(Long requesterId, Long bookId, BookEntity updatedBook) {
     log.info("Полное обновление книги: {}", updatedBook);
     bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
     UserEntity user = userRepository.findById(
@@ -96,7 +96,7 @@ public class BookService {
     userRepository.save(user);
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " updated book: " + updatedBook)
             .build()
@@ -106,7 +106,7 @@ public class BookService {
 
   @CachePut(value = "book", key = "#bookId.hashCode()")
   @Transactional
-  public BookDto patch(String requesterId, Long bookId, BookEntity updatedBook) {
+  public BookDto patch(Long requesterId, Long bookId, BookEntity updatedBook) {
     log.info("Частичное обновление книги: {}", updatedBook);
     BookEntity book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
     if (!updatedBook.getTitle().isEmpty()) {
@@ -120,7 +120,7 @@ public class BookService {
     userRepository.save(user);
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " patched book: " + book)
             .build()
@@ -130,14 +130,14 @@ public class BookService {
 
   @CacheEvict(value = "book", key = "#bookId.hashCode()")
   @Transactional
-  public void delete(String requesterId, Long bookId) {
+  public void delete(Long requesterId, Long bookId) {
     log.info("Удаление книги с ID: {}", bookId);
     BookEntity book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId.toString()));
     UserEntity user = userRepository.findById(book.getAuthor().getId()).orElseThrow(() -> new UserNotFoundException(bookId.toString()));
     user.getBooks().remove(bookId);
     kafkaProducerService.sendMessage(
         MessageDto.builder()
-            .userId(UUID.fromString(requesterId))
+            .userId(requesterId)
             .type(Action.SELECT.toString())
             .log("User with ID: " + requesterId + " deleted book: " + book)
             .build()

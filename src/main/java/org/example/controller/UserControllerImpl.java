@@ -35,7 +35,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public CompletableFuture<ResponseEntity<List<UserDto>>> getAllUsers(String requesterId) {
+  public CompletableFuture<ResponseEntity<List<UserDto>>> getAllUsers(Long requesterId) {
     return circuitBreaker.executeSupplier(() ->
         rateLimiter.executeSupplier(() ->
             userService.getAll(requesterId).thenApply(ResponseEntity::ok)
@@ -47,7 +47,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<UserDto> getUserById(String requesterId, Long id) {
+  public ResponseEntity<UserDto> getUserById(Long requesterId, Long id) {
     return circuitBreaker.executeSupplier(
         () -> ResponseEntity.ok(userService.getById(requesterId, id))
     );
@@ -65,7 +65,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<UserDto> patchUser(String requesterId, Long userId, UserPatchRequest user) {
+  public ResponseEntity<UserDto> patchUser(Long requesterId, Long userId, UserPatchRequest user) {
     ArrayList<BookEntity> books = new ArrayList<>();
     for (Long book : user.getBooks()) {
       books.add(bookRepository.getById(book));
@@ -77,7 +77,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<UserDto> updateUser(String requesterId, Long userId, UserPutRequest user) {
+  public ResponseEntity<UserDto> updateUser(Long requesterId, Long userId, UserPutRequest user) {
     ArrayList<BookEntity> books = new ArrayList<>();
     for (Long book : user.getBooks()) {
       books.add(bookRepository.getById(book));
@@ -89,7 +89,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<Void> deleteUser(String requesterId, Long userId) {
+  public ResponseEntity<Void> deleteUser(Long requesterId, Long userId) {
     userService.delete(requesterId, userId);
     return circuitBreaker.executeSupplier(
         () -> ResponseEntity.noContent().build()
