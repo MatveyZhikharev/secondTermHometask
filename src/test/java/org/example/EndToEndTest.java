@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.Dto.BookDto;
 import org.example.Dto.UserDto;
 import org.example.config.KafkaProducerConfig;
+import org.example.config.KafkaTopicConfig;
 import org.example.entity.BookEntity;
 import org.example.request.BookCreateRequest;
 import org.example.request.BookPutRequest;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
     Application.class,
     WebSecurityConfig.class,
     KafkaProducerConfig.class,
+    KafkaTopicConfig.class,
     EndToEndTest.ObjectMapperTestConfig.class
 })
 @ActiveProfiles("test")
