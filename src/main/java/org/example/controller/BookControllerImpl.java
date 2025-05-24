@@ -30,37 +30,37 @@ public class BookControllerImpl implements BookController {
   }
 
   @Override
-  public ResponseEntity<List<BookDto>> getAllBooks() {
-    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.getAll()));
+  public ResponseEntity<List<BookDto>> getAllBooks(Long requesterId) {
+    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.getAll(requesterId)));
   }
 
   @Override
-  public ResponseEntity<BookDto> getBookById(Long bookId) {
-    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.getById(bookId)));
+  public ResponseEntity<BookDto> getBookById(Long requesterId, Long bookId) {
+    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.getById(requesterId, bookId)));
   }
 
   @Override
-  public ResponseEntity<Long> createBook(BookCreateRequest bookDraft) {
+  public ResponseEntity<Long> createBook(Long requesterId, BookCreateRequest bookDraft) {
     return rateLimiter.executeSupplier(
-        () -> ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(bookDraft.getTitle(), bookDraft.getAuthorId()))
+        () -> ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(requesterId, bookDraft.getTitle(), bookDraft.getAuthorId()))
     );
   }
 
   @Override
-  public ResponseEntity<BookDto> patchBook(Long bookId, BookPatchRequest book) {
+  public ResponseEntity<BookDto> patchBook(Long requesterId, Long bookId, BookPatchRequest book) {
     BookEntity castedBook = new BookEntity(book.getId(), book.getTitle(), userRepository.findById(bookId).get());
-    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.update(bookId, castedBook)));
+    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.update(requesterId, bookId, castedBook)));
   }
 
   @Override
-  public ResponseEntity<BookDto> updateBook(Long bookId, BookPutRequest book) {
+  public ResponseEntity<BookDto> updateBook(Long requesterId, Long bookId, BookPutRequest book) {
     BookEntity castedBook = new BookEntity(book.getId(), book.getTitle(), userRepository.findById(book.getAuthorId()).get());
-    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.patch(bookId, castedBook)));
+    return rateLimiter.executeSupplier(() -> ResponseEntity.ok(bookService.patch(requesterId, bookId, castedBook)));
   }
 
   @Override
-  public ResponseEntity<Void> deleteBook(Long bookId) {
-    bookService.delete(bookId);
+  public ResponseEntity<Void> deleteBook(Long requesterId, Long bookId) {
+    bookService.delete(requesterId, bookId);
     return rateLimiter.executeSupplier(() -> ResponseEntity.noContent().build());
   }
 }

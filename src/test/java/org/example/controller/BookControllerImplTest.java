@@ -40,22 +40,22 @@ class BookControllerImplTest {
 
   @Test
   void getAllBooks() throws Exception {
-    when(bookService.getAll()).thenReturn(
+    when(bookService.getAll(0L)).thenReturn(
         List.of(
             new BookDto(1L, "book1", 1L),
             new BookDto(2L, "book2", 1L)
         )
     );
-    mvc.perform(get("/api/books/"))
+    mvc.perform(get("/api/books/").header("requesterId", 0L))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(2));
   }
 
   @Test
   void getBookById() throws Exception {
-    when(bookService.getById(1L))
+    when(bookService.getById(0L, 1L))
         .thenReturn(new BookDto(new BookEntity(1L, "book1", new UserEntity(1L, "", "", new ArrayList<>()))));
-    mvc.perform(get("/api/books/1"))
+    mvc.perform(get("/api/books/1").header("requesterId", 0L))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1))
         .andExpect(jsonPath("$.title").value("book1"))
@@ -64,8 +64,8 @@ class BookControllerImplTest {
 
   @Test
   void deleteBook() throws Exception {
-    bookService.create("", 1L);
-    mvc.perform(delete("/api/books/1"))
+    bookService.create(0L, "", 1L);
+    mvc.perform(delete("/api/books/1").header("requesterId", 0L))
         .andExpect(status().isNoContent());
   }
 }

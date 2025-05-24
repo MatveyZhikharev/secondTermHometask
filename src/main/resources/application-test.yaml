@@ -15,5 +15,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  kafka:
+    bootstrap-servers: localhost:29093
+topic-to-send-message: audit
 server:
   port: 8082

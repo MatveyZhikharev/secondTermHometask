@@ -35,10 +35,10 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public CompletableFuture<ResponseEntity<List<UserDto>>> getAllUsers() {
+  public CompletableFuture<ResponseEntity<List<UserDto>>> getAllUsers(Long requesterId) {
     return circuitBreaker.executeSupplier(() ->
         rateLimiter.executeSupplier(() ->
-            userService.getAll().thenApply(ResponseEntity::ok)
+            userService.getAll(requesterId).thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> {
                   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
                 })
@@ -47,9 +47,9 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<UserDto> getUserById(Long id) {
+  public ResponseEntity<UserDto> getUserById(Long requesterId, Long id) {
     return circuitBreaker.executeSupplier(
-        () -> ResponseEntity.ok(userService.getById(id))
+        () -> ResponseEntity.ok(userService.getById(requesterId, id))
     );
   }
 
@@ -65,32 +65,32 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<UserDto> patchUser(Long userId, UserPatchRequest user) {
+  public ResponseEntity<UserDto> patchUser(Long requesterId, Long userId, UserPatchRequest user) {
     ArrayList<BookEntity> books = new ArrayList<>();
     for (Long book : user.getBooks()) {
       books.add(bookRepository.getById(book));
     }
     UserEntity castedUser = new UserEntity(user.getId(), user.getName(), user.getSurname(), books);
     return circuitBreaker.executeSupplier(
-        () -> ResponseEntity.ok(userService.patch(userId, castedUser))
+        () -> ResponseEntity.ok(userService.patch(requesterId, userId, castedUser))
     );
   }
 
   @Override
-  public ResponseEntity<UserDto> updateUser(Long userId, UserPutRequest user) {
+  public ResponseEntity<UserDto> updateUser(Long requesterId, Long userId, UserPutRequest user) {
     ArrayList<BookEntity> books = new ArrayList<>();
     for (Long book : user.getBooks()) {
       books.add(bookRepository.getById(book));
     }
     UserEntity castedUser = new UserEntity(user.getId(), user.getName(), user.getSurname(), books);
     return circuitBreaker.executeSupplier(
-        () -> ResponseEntity.ok(userService.update(userId, castedUser))
+        () -> ResponseEntity.ok(userService.update(requesterId, userId, castedUser))
     );
   }
 
   @Override
-  public ResponseEntity<Void> deleteUser(Long userId) {
-    userService.delete(userId);
+  public ResponseEntity<Void> deleteUser(Long requesterId, Long userId) {
+    userService.delete(requesterId, userId);
     return circuitBreaker.executeSupplier(
         () -> ResponseEntity.noContent().build()
     );
