@@ -2,7 +2,9 @@ package org.example.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.entity.BookEntity;
 import org.example.entity.UserEntity;
 
@@ -12,6 +14,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 public class UserDto {
   private Long id;
   private String name;
