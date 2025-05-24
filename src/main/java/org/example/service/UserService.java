@@ -33,7 +33,7 @@ public class UserService {
   private Set<String> createdUserFullNames = ConcurrentHashMap.newKeySet();
 
   @Async
-  @Transactional(readOnly = true)
+  @Transactional
   public CompletableFuture<List<UserDto>> getAll(Long requesterId) {
     log.info("Получение всех пользователей");
     ArrayList<UserDto> userDtos = new ArrayList<>();
@@ -52,7 +52,7 @@ public class UserService {
 
   // At Least Once
   @Retryable(value = RuntimeException.class, maxAttempts = 5, backoff = @Backoff(delay = 10000))
-  @Transactional(readOnly = true)
+  @Transactional
   public UserDto getById(Long requesterId, Long userId) {
     log.info("Получение пользователя с ID: {}", userId.toString());
     UserEntity user = userRepository.findById(userId).orElseThrow(() -> new BookNotFoundException(userId.toString()));
