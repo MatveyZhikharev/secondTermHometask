@@ -40,7 +40,7 @@ public interface UserController {
           })
   })
   @GetMapping("/")
-  CompletableFuture<ResponseEntity<List<UserDto>>> getAllUsers(@RequestHeader(value = "requesterId", required = true) Long requesterId);
+  CompletableFuture<ResponseEntity<List<UserDto>>> getAllUsers(@RequestHeader(value = "requesterId", required = false) Long requesterId);
 
   @Operation(summary = "Получить пользователя по ID")
   @ApiResponses(value = {
@@ -57,8 +57,8 @@ public interface UserController {
   })
   @GetMapping("/{id}")
   ResponseEntity<UserDto> getUserById(
-      @RequestHeader(value = "requesterId", required = true) Long requesterId,
-      @Parameter(description = "ID ", required = true)
+      @RequestHeader(value = "requesterId", required = false) Long requesterId,
+      @Parameter(description = "ID ", required = false)
       @Valid
       @PathVariable("id") Long userId
   );
@@ -93,7 +93,7 @@ public interface UserController {
   })
   @PutMapping("/{id}")
   ResponseEntity<UserDto> updateUser(
-      @RequestHeader(value = "requesterId", required = true) Long requesterId,
+      @RequestHeader(value = "requesterId", required = false) Long requesterId,
       @Parameter(description = "ID пользователя") @Valid @PathVariable("id") Long userId,
       @Parameter(description = "Данные о пользователе") @Valid @RequestBody UserPutRequest user);
 
@@ -112,7 +112,7 @@ public interface UserController {
   })
   @PatchMapping("/{id}")
   ResponseEntity<UserDto> patchUser(
-      @RequestHeader(value = "requesterId", required = true) Long requesterId,
+      @RequestHeader(value = "requesterId", required = false) Long requesterId,
       @Parameter(description = "ID пользователя") @Valid @PathVariable("id") Long userId,
       @Parameter(description = "Данные о пользователе") @Valid @RequestBody UserPatchRequest user);
 
@@ -125,7 +125,7 @@ public interface UserController {
   })
   @DeleteMapping("/{id}")
   ResponseEntity<Void> deleteUser(
-      @RequestHeader(value = "requesterId", required = true) Long requesterId,
+      @RequestHeader(value = "requesterId", required = false) Long requesterId,
       @Parameter(description = "ID пользователя") @Valid @PathVariable("id") Long userId
   );
 }

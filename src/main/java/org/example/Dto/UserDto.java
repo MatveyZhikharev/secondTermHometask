@@ -1,5 +1,6 @@
 package org.example.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
   private Long id;
   private String name;

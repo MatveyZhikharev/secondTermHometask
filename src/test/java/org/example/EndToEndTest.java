@@ -97,7 +97,7 @@ public class EndToEndTest {
     ResponseEntity<UserDto> getUserResponse =
         restTemplate.getForEntity("http://localhost:" + port + "/api/users/1", UserDto.class);
     assertEquals(HttpStatus.OK, getUserResponse.getStatusCode());
-    assertEquals(user1, getUserResponse.getBody());
+    assertEquals(user1.getBody(), getUserResponse.getBody());
 
     BookCreateRequest bookEntity = new BookCreateRequest(1L, "BookOfUser1", 1L);
     ResponseEntity<String> createBookResponse =
