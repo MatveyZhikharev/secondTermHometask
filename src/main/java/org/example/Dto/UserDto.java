@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
   private Long id;

@@ -3,6 +3,8 @@ package org.example.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.Dto.MessageDto;
+import org.example.entity.OutboxRecord;
+import org.example.repository.OutboxRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -12,14 +14,14 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class KafkaProducerService {
-  private final KafkaTemplate<String, String> kafkaTemplate;
+  private final OutboxRepository outboxRepository;
   private final ObjectMapper objectMapper;
   private final String topic;
 
-  public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate,
+  public KafkaProducerService(OutboxRepository outboxRepository,
                               ObjectMapper objectMapper,
                               @Value("${topic-to-send-message}") String topic) {
-    this.kafkaTemplate = kafkaTemplate;
+    this.outboxRepository = outboxRepository;
     this.objectMapper = objectMapper;
     this.topic = topic;
   }
@@ -31,8 +33,7 @@ public class KafkaProducerService {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
-
-    CompletableFuture<SendResult<String, String>> sendResult = kafkaTemplate.send(topic, message);
+    outboxRepository.save(new OutboxRecord(message));
   }
 }
 

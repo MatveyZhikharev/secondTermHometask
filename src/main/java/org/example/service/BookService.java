@@ -30,7 +30,7 @@ public class BookService {
   private final KafkaProducerService kafkaProducerService;
 
   @Cacheable(value = "books")
-  @Transactional(readOnly = true)
+  @Transactional
   public List<BookDto> getAll(Long requesterId) {
     log.info("Получение всех книг");
     ArrayList<BookDto> bookDtos = new ArrayList<>();
@@ -48,7 +48,7 @@ public class BookService {
   }
 
   @Cacheable(value = "book", key = "#bookId.hashCode()")
-  @Transactional(readOnly = true)
+  @Transactional
   public BookDto getById(Long requesterId, Long bookId) {
     log.info("Получение книги с ID: {}", bookId.toString());
     kafkaProducerService.sendMessage(

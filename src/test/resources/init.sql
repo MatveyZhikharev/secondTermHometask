@@ -10,3 +10,7 @@ CREATE TABLE IF NOT EXISTS books (
                                      author_id BIGINT NOT NULL,
                                      FOREIGN KEY (author_id) REFERENCES users (id)
 );
+CREATE TABLE IF NOT EXISTS outbox(
+    id   BIGSERIAL PRIMARY KEY,
+    data TEXT NOT NULL
+)
