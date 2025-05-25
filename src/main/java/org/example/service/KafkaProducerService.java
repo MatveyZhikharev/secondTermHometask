@@ -15,17 +15,13 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class KafkaProducerService {
   private final OutboxRepository outboxRepository;
-  private final OutboxScheduler outboxScheduler;
-  private KafkaTemplate<String, String> kafkaTemplate;
   private final ObjectMapper objectMapper;
   private final String topic;
 
   public KafkaProducerService(OutboxRepository outboxRepository,
-                              OutboxScheduler outboxScheduler,
                               ObjectMapper objectMapper,
                               @Value("${topic-to-send-message}") String topic) {
     this.outboxRepository = outboxRepository;
-    this.outboxScheduler = outboxScheduler;
     this.objectMapper = objectMapper;
     this.topic = topic;
   }
